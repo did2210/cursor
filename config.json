@@ -1,0 +1,60 @@
+{
+  "system": {
+    "version": "1.0.0",
+    "name": "Auto Product Categorizer",
+    "description": "Система автоматической категоризации товаров с самообучением"
+  },
+  "files": {
+    "product_file": "product1.xlsx",
+    "sku_file": "sku_vkus.xlsx",
+    "knowledge_base": "knowledge_base.json",
+    "brands_db": "brands_db.json",
+    "output_product": "product1_updated.xlsx",
+    "output_sku": "sku_vkus_updated.xlsx"
+  },
+  "thresholds": {
+    "brand_matching": {
+      "exact": 100,
+      "high_confidence": 90,
+      "medium_confidence": 75,
+      "low_confidence": 60
+    },
+    "flavor_matching": {
+      "exact": 100,
+      "fuzzy": 85
+    }
+  },
+  "categories": {
+    "main": [
+      "вода",
+      "газировка",
+      "прочее",
+      "энергетик"
+    ],
+    "volume_ranges": {
+      "0-0,4л": [0, 0.4],
+      "0,4-0,6л": [0.4, 0.6],
+      "0,6-1л": [0.6, 1.0],
+      "1,0-1,5л": [1.0, 1.5],
+      "1,5-2,0л": [1.5, 2.0],
+      "2,0-2,5л": [2.0, 2.5],
+      "2,5л+": [2.5, 999]
+    }
+  },
+  "packaging_types": [
+    "PET",
+    "CAN",
+    "GLASS",
+    "BOTTLE"
+  ],
+  "learning": {
+    "auto_learn": true,
+    "validation_sample_size": 500,
+    "min_confidence_to_learn": 80.0
+  },
+  "output": {
+    "verbose": true,
+    "save_logs": true,
+    "log_file": "categorizer.log"
+  }
+}
