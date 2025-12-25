@@ -45,14 +45,19 @@ class ProductNameParser:
         
         self.packaging_keywords = {
             'ПЭТ': 'PET',
-            'PET': 'PET', 
+            'PET': 'PET',
+            'Ж/Б': 'CAN',  # Жестяная банка
+            'Ж.Б': 'CAN',
+            'ЖБ': 'CAN',
             'СТЕКЛО': 'GLASS',
             'БАНКА': 'CAN',
             'CAN': 'CAN',
             'БУТЫЛКА': 'BOTTLE',
             'BOTTLE': 'BOTTLE',
             'ЖЕСТЬ': 'CAN',
-            'АЛЮМИНИЙ': 'CAN'
+            'АЛЮМИНИЙ': 'CAN',
+            'ТЕТРАПАК': 'TETRA',
+            'TETRAPAK': 'TETRA'
         }
         
         self.carbonation_keywords = {
@@ -191,6 +196,7 @@ class ProductNameParser:
         # Обычно бренд идет в начале или указан в скобках
         # Пример: "ФРУСТИНО НАПИТОК..." -> ФРУСТИНО
         # Пример: "...0,5Л(ВЭЗН):20" -> ВЭЗН
+        # Пример: "Напиток ДОБРЫЙ КОЛА..." -> ДОБРЫЙ
         
         # Поиск в скобках (производитель)
         bracket_match = re.search(r'\(([^)]+)\)', text)
@@ -200,12 +206,37 @@ class ProductNameParser:
             if potential_brand and not any(x in potential_brand for x in [':', ';', 'ООО', 'ОАО']):
                 return potential_brand
         
-        # Берем первое слово как потенциальный бренд
+        # Убираем префиксы типа "Энергетический напиток", "Минеральная вода" и т.д.
+        text_cleaned = text
+        prefixes_to_remove = [
+            'ЭНЕРГЕТИЧЕСКИЙ НАПИТОК',
+            'МИНЕРАЛЬНАЯ ВОДА',
+            'НАПИТОК',
+            'ВОДА',
+            'СОК',
+            'НЕКТАР',
+            'МОРС',
+            'КВАС'
+        ]
+        
+        for prefix in prefixes_to_remove:
+            if text_cleaned.startswith(prefix):
+                text_cleaned = text_cleaned[len(prefix):].strip()
+                break
+        
+        # Берем первое слово после удаления префикса
+        words = text_cleaned.split()
+        if words:
+            first_word = words[0].strip()
+            # Исключаем общие слова и артикли
+            if first_word and len(first_word) > 1:
+                return first_word
+        
+        # Если ничего не нашли, берем первое слово оригинального текста
         words = text.split()
         if words:
             first_word = words[0].strip()
-            # Исключаем общие слова
-            if first_word not in ['НАПИТОК', 'ВОДА', 'СОК', 'НЕКТАР', 'МОРС']:
+            if first_word not in ['НАПИТОК', 'ВОДА', 'СОК', 'НЕКТАР', 'МОРС', 'КВАС']:
                 return first_word
         
         return None
