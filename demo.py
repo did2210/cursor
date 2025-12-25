@@ -13,23 +13,29 @@ def main():
     print("="*80)
     print()
     
-    # Инициализация
-    parser = ProductNameParser()
-    brand_matcher = BrandMatcher()
-    flavor_matcher = FlavorMatcher()
+    # Проверяем наличие обученной базы
+    import os
+    if not os.path.exists('knowledge_base.json') or not os.path.exists('brands_db.json'):
+        print("⚠️  ВНИМАНИЕ: Система не обучена!")
+        print("\nСначала запустите обучение:")
+        print("  python3 learning_engine.py")
+        print("\nИли используйте start.py:")
+        print("  python3 start.py")
+        print("\nОбучение займет 2-5 минут и создаст базу знаний на основе ваших данных.")
+        return
     
-    # Добавляем популярные бренды
-    popular_brands = [
-        'COCA-COLA', 'PEPSI', 'SPRITE', 'FANTA', 'SCHWEPPES',
-        'ДОБРЫЙ', 'ФРУКТОВЫЙ САД', 'J7', 'RICH',
-        'ADRENALINE', 'RED BULL', 'BURN',
-        'BONAQUA', 'AQUA MINERALE', 'СВЯТОЙ ИСТОЧНИК',
-        'ЧИСТОЗЕРЬЕ', 'КРАСАВЧИК', 'ФРУСТИНО',
-        'ЛЮБИМЫЙ', 'ДА!', 'ПРОСТО'
-    ]
+    # Инициализация с обученной базой
+    parser = ProductNameParser('knowledge_base.json')
+    brand_matcher = BrandMatcher('brands_db.json')
+    flavor_matcher = FlavorMatcher('brands_db.json')
     
-    for brand in popular_brands:
-        brand_matcher.add_brand_to_db(brand)
+    # Получаем все бренды из обученной базы
+    popular_brands = brand_matcher.get_all_brands()
+    
+    print(f"✓ База знаний загружена")
+    print(f"  Количество брендов: {len(popular_brands)}")
+    print(f"  Количество вкусов: {len(flavor_matcher.get_all_flavors())}")
+    print()
     
     # Тестовые примеры
     test_products = [

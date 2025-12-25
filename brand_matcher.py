@@ -58,6 +58,10 @@ class BrandMatcher:
         self.medium_confidence_threshold = 75
         self.low_confidence_threshold = 60
         
+    def get_all_brands(self) -> List[str]:
+        """Получить список всех известных брендов"""
+        return list(self.brands_db.get('brands', {}).keys())
+        
     def _load_brands_db(self) -> Dict:
         """Загрузка базы данных брендов"""
         if self.brands_db_path:
@@ -272,33 +276,44 @@ class BrandMatcher:
 class FlavorMatcher:
     """Класс для сопоставления вкусов с поддержкой нечеткого поиска"""
     
-    def __init__(self):
-        # База популярных вкусов
-        self.flavors_db = {
-            'ЯБЛОКО': ['APPLE', 'ЯБЛОЧНЫЙ', 'ЯБЛОК'],
-            'АПЕЛЬСИН': ['ORANGE', 'АПЕЛЬСИНОВЫЙ', 'ОРАНЖ'],
-            'ЛИМОН': ['LEMON', 'ЛИМОННЫЙ'],
-            'ВИШНЯ': ['CHERRY', 'ВИШНЕВЫЙ'],
-            'ПЕРСИК': ['PEACH', 'ПЕРСИКОВЫЙ'],
-            'ГРУША': ['PEAR', 'ГРУШЕВЫЙ', 'ДЮШЕС'],
-            'ДЮШЕС': ['PEAR', 'ГРУША'],
-            'КЛУБНИКА': ['STRAWBERRY', 'КЛУБНИЧНЫЙ'],
-            'МАЛИНА': ['RASPBERRY', 'МАЛИНОВЫЙ'],
-            'СМОРОДИНА': ['CURRANT', 'ЧЕРНАЯ СМОРОДИНА'],
-            'ВИНОГРАД': ['GRAPE', 'ВИНОГРАДНЫЙ'],
-            'КОЛА': ['COLA', 'КОЛЬСКИЙ'],
-            'ТАРХУН': ['TARRAGON', 'ЭСТРАГОН'],
-            'БУРАТИНО': ['BURATINO'],
-            'БАЙКАЛ': ['BAIKAL'],
-            'АНАНАС': ['PINEAPPLE', 'АНАНАСОВЫЙ'],
-            'МАНГО': ['MANGO', 'МАНГОВЫЙ'],
-            'МАНДАРИН': ['MANDARIN', 'МАНДАРИНОВЫЙ'],
-            'ГРЕЙПФРУТ': ['GRAPEFRUIT', 'ГРЕЙПФРУТОВЫЙ'],
-            'БАНАН': ['BANANA', 'БАНАНОВЫЙ'],
-            'ТОМАТ': ['TOMATO', 'ТОМАТНЫЙ'],
-            'МУЛЬТИФРУКТ': ['MULTIFRUIT', 'МИКС'],
-            'ТРОПИК': ['TROPICAL', 'ТРОПИЧЕСКИЙ']
-        }
+    def __init__(self, flavors_db_path: str = None):
+        self.flavors_db_path = flavors_db_path
+        self.flavors_db = self._load_flavors_db()
+    
+    def _load_flavors_db(self) -> Dict:
+        """Загрузка базы вкусов из JSON"""
+        if self.flavors_db_path:
+            try:
+                with open(self.flavors_db_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    return data.get('flavors', {})
+            except FileNotFoundError:
+                return {}
+        return {}
+    
+    def add_flavor(self, flavor: str, aliases: List[str] = None):
+        """Добавление вкуса в базу"""
+        flavor_upper = flavor.upper()
+        if flavor_upper not in self.flavors_db:
+            self.flavors_db[flavor_upper] = aliases or []
+    
+    def save_flavors_db(self):
+        """Сохранение базы вкусов"""
+        if self.flavors_db_path:
+            try:
+                with open(self.flavors_db_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+            except FileNotFoundError:
+                data = {}
+            
+            data['flavors'] = self.flavors_db
+            
+            with open(self.flavors_db_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+    
+    def get_all_flavors(self) -> List[str]:
+        """Получить список всех известных вкусов"""
+        return list(self.flavors_db.keys())
     
     def match_flavor(self, text: str) -> Optional[str]:
         """Сопоставление вкуса из текста"""
@@ -329,57 +344,56 @@ class FlavorMatcher:
 
 
 if __name__ == "__main__":
-    # Тестирование
-    matcher = BrandMatcher()
+    # Тестирование с реальными данными
+    print("="*80)
+    print("ТЕСТИРОВАНИЕ МОДУЛЯ BRAND_MATCHER")
+    print("="*80)
     
-    # Добавляем тестовые бренды
-    test_brands = [
-        'ADRENALINE',
-        'ДОБРЫЙ',
-        'ЧИСТОЗЕРЬЕ',
-        'ФРУСТИНО',
-        'COCA-COLA',
-        'PEPSI'
-    ]
-    
-    for brand in test_brands:
-        matcher.add_brand_to_db(brand)
-    
-    # Тестовые случаи
-    test_cases = [
-        'Напиток ADREN энергетик 0,5Л',
-        'ADRLINE напиток газ',
-        'Напиток АДРИН энергетический',
-        'АДРЕНАЛАЙН энергетик',
-        'АДРИНАЛАЙ напиток',
-        'АДРИ энергетик',
-        'ДОБРЫЙ КОЛА',
-        'DOBRIY напиток'
-    ]
-    
-    print("Тестирование сопоставления брендов:\n")
-    for test in test_cases:
-        result = matcher.match_brand(test, test_brands)
-        if result:
+    # Проверяем наличие обученной базы
+    import os
+    if not os.path.exists('brands_db.json'):
+        print("\n⚠️  ВНИМАНИЕ: База брендов не найдена!")
+        print("Сначала запустите обучение системы:")
+        print("  python3 learning_engine.py")
+        print("\nЗатем повторите тест.")
+    else:
+        # Загружаем обученную базу
+        matcher = BrandMatcher('brands_db.json')
+        flavor_matcher = FlavorMatcher('brands_db.json')
+        
+        brands = matcher.get_all_brands()
+        flavors = flavor_matcher.get_all_flavors()
+        
+        print(f"\n✓ База брендов загружена")
+        print(f"  Количество брендов: {len(brands)}")
+        print(f"  Количество вкусов: {len(flavors)}")
+        
+        print(f"\n📊 Топ-10 брендов:")
+        for i, brand in enumerate(sorted(brands)[:10], 1):
+            print(f"  {i}. {brand}")
+        
+        print(f"\n🍎 Топ-10 вкусов:")
+        for i, flavor in enumerate(sorted(flavors)[:10], 1):
+            print(f"  {i}. {flavor}")
+        
+        # Тестирование на реальных примерах
+        print(f"\n🧪 ТЕСТИРОВАНИЕ РАСПОЗНАВАНИЯ:\n")
+        
+        test_cases = [
+            'Напиток ДОБРЫЙ КОЛА БЕЗ САХАРА ГАЗ. ПЭТ 2Л',
+            'Минеральная вода ЧИСТОЗЕРЬЕ ГАЗ. ПЭТ 0,5Л',
+            'ФРУКТОВЫЙ САД НЕКТАР ЯБЛОЧНЫЙ ОСВЕТЛ 1,93Л',
+        ]
+        
+        for test in test_cases:
             print(f"Текст: '{test}'")
-            print(f"  -> Бренд: {result.matched_brand}")
-            print(f"  -> Уверенность: {result.confidence:.1f}%")
-            print(f"  -> Метод: {result.method}")
-        else:
-            print(f"Текст: '{test}' -> Бренд не найден")
-        print()
-    
-    # Тестирование вкусов
-    print("\nТестирование сопоставления вкусов:\n")
-    flavor_matcher = FlavorMatcher()
-    
-    flavor_tests = [
-        'Напиток ЯБЛОКО 0,5Л',
-        'СОК APPLE натуральный',
-        'Нектар ДЮШЕС',
-        'КОЛА без сахара'
-    ]
-    
-    for test in flavor_tests:
-        flavor = flavor_matcher.match_flavor(test)
-        print(f"Текст: '{test}' -> Вкус: {flavor}")
+            result = matcher.match_brand(test, brands[:100])  # Первые 100 брендов
+            if result:
+                print(f"  ✓ Бренд: {result.matched_brand} ({result.confidence:.1f}%, метод: {result.method})")
+            else:
+                print(f"  ❌ Бренд не найден")
+            
+            flavor = flavor_matcher.match_flavor(test)
+            if flavor:
+                print(f"  ✓ Вкус: {flavor}")
+            print()

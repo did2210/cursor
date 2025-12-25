@@ -45,7 +45,7 @@ class AutoCategorizer:
         # Инициализируем компоненты
         self.parser = ProductNameParser(knowledge_base_path)
         self.brand_matcher = BrandMatcher(brands_db_path)
-        self.flavor_matcher = FlavorMatcher()
+        self.flavor_matcher = FlavorMatcher(brands_db_path)
         
         # Кэш известных xcode
         self.known_xcodes = set(self.product_df['xcode'].astype(str).values)
