@@ -11,7 +11,21 @@ import os
 # ============================================================================
 
 # Путь к папке с файлами (если оставить пустым, будет использована текущая папка)
-FOLDER_PATH = ""  # Например: "/home/user/documents/products" или "C:\\Users\\User\\Documents"
+# 
+# ⚠️  ДЛЯ WINDOWS: Используйте один из трех способов:
+#     СПОСОБ 1: Сырая строка (r"...") - РЕКОМЕНДУЕТСЯ!
+#     FOLDER_PATH = r"P:\vs code\sdfgsdfgsdgdsgf\prodict"
+#     
+#     СПОСОБ 2: Двойные слэши
+#     FOLDER_PATH = "P:\\vs code\\sdfgsdfgsdgdsgf\\prodict"
+#     
+#     СПОСОБ 3: Прямые слэши (тоже работает в Windows!)
+#     FOLDER_PATH = "P:/vs code/sdfgsdfgsdgdsgf/prodict"
+#
+# Для Linux/Mac: обычные пути
+#     FOLDER_PATH = "/home/user/documents/products"
+#
+FOLDER_PATH = ""  # Вставьте ваш путь здесь
 
 # Если FOLDER_PATH пустой, используем текущую папку
 if not FOLDER_PATH:
