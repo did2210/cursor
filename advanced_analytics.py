@@ -9,6 +9,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 from datetime import datetime
+import os
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -16,8 +17,10 @@ print("="*80)
 print("РАСШИРЕННАЯ АНАЛИТИКА ДАННЫХ")
 print("="*80)
 
-# Загрузка данных
-df = pd.read_excel('/workspace/data.xlsx')
+# Загрузка данных из текущей директории
+script_dir = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(script_dir, 'data.xlsx')
+df = pd.read_excel(data_path)
 df['Дата'] = pd.to_datetime(df['Дата'])
 df['Год'] = df['Дата'].dt.year
 df['Месяц'] = df['Дата'].dt.month
@@ -187,7 +190,7 @@ group_detail['Выполнение_%'] = ((group_detail['Факт продажи
 # ============================================================================
 
 print("\n7. Экспорт данных в Excel...")
-output_excel = '/workspace/analytics_report.xlsx'
+output_excel = os.path.join(script_dir, 'analytics_report.xlsx')
 
 with pd.ExcelWriter(output_excel, engine='openpyxl') as writer:
     # Сводная информация
@@ -387,7 +390,8 @@ additional_html = f"""
 </html>
 """
 
-with open('/workspace/advanced_analytics_report.html', 'w', encoding='utf-8') as f:
+html_output = os.path.join(script_dir, 'advanced_analytics_report.html')
+with open(html_output, 'w', encoding='utf-8') as f:
     f.write(additional_html)
 
 # ============================================================================
@@ -410,7 +414,7 @@ print(f"  • Количество контрактов: {df['Контракт']
 print("\n📁 СОЗДАННЫЕ ФАЙЛЫ:")
 print(f"  1. {output_excel}")
 print(f"     - 7 вкладок с детальным анализом")
-print(f"  2. /workspace/advanced_analytics_report.html")
+print(f"  2. {html_output}")
 print(f"     - Дополнительные интерактивные графики")
 
 print("\n🔍 ТОП-5 БРЕНДОВ ПО ПРОДАЖАМ:")

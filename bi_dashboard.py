@@ -17,7 +17,11 @@ warnings.filterwarnings('ignore')
 # ============================================================================
 
 print("Загрузка данных...")
-df = pd.read_excel('/workspace/data.xlsx')
+# Используем текущую директорию
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(script_dir, 'data.xlsx')
+df = pd.read_excel(data_path)
 
 # Очистка и подготовка данных
 df['Дата'] = pd.to_datetime(df['Дата'])
@@ -618,8 +622,8 @@ html_content += f"""
 </html>
 """
 
-# Сохранение отчета
-output_file = '/workspace/bi_dashboard_report.html'
+# Сохранение отчета в текущую директорию
+output_file = os.path.join(script_dir, 'bi_dashboard_report.html')
 with open(output_file, 'w', encoding='utf-8') as f:
     f.write(html_content)
 

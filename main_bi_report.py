@@ -32,10 +32,15 @@ warnings.filterwarnings('ignore')
 # Или можете использовать прямые слэши (работает в Windows):
 # DATA_PATH = "//FS/Users/Private/GFD/Public/Трейд-маркетинг/7.Общие документы/Гусев/итог/data.xlsx"
 
-# Для текущего рабочего каталога:
-DATA_PATH = r'/workspace/data.xlsx'
+# Автоматически определяем директорию скрипта
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
-OUTPUT_DIR = r'/workspace/reports'  # Папка для сохранения отчетов
+# По умолчанию ищем data.xlsx в той же папке
+DATA_PATH = os.path.join(script_dir, 'data.xlsx')
+
+# Создаем папку reports в текущей директории
+OUTPUT_DIR = os.path.join(script_dir, 'reports')
 
 # =============================================================================
 
