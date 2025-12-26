@@ -180,7 +180,7 @@ taskkill /PID <номер> /F
 **Вариант 2:** Измените порт в `bi_dashboard.py`
 Откройте файл в блокноте, найдите последнюю строку:
 ```python
-app.run_server(debug=False, host='0.0.0.0', port=8050)
+app.run(debug=False, host='0.0.0.0', port=8050)
 ```
 Измените `port=8050` на `port=8051` (или любой другой)
 

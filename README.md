@@ -150,6 +150,8 @@ numpy>=1.20.0
 pip install pandas openpyxl plotly dash dash-bootstrap-components numpy
 ```
 
+**Примечание:** Код совместим с Dash 2.0+ (используется метод `app.run` вместо устаревшего `app.run_server`)
+
 ## 📊 Структура данных
 
 Дашборд работает с Excel файлом `data.xlsx` со следующей структурой:
@@ -183,7 +185,7 @@ pip install pandas openpyxl plotly dash dash-bootstrap-components numpy
 ### Изменение порта дашборда:
 ```python
 # В bi_dashboard.py, последняя строка:
-app.run_server(debug=False, host='0.0.0.0', port=8051)  # Было 8050
+app.run(debug=False, host='0.0.0.0', port=8051)  # Было 8050
 ```
 
 ### Изменение цветовой схемы:

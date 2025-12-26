@@ -584,4 +584,4 @@ if __name__ == '__main__':
     print("\n📊 Откройте в браузере: http://localhost:8050")
     print("\n💡 Для остановки нажмите Ctrl+C")
     print("="*80)
-    app.run_server(debug=False, host='0.0.0.0', port=8050)
+    app.run(debug=False, host='0.0.0.0', port=8050)
