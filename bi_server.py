@@ -54,7 +54,7 @@ contracts = sorted([{'label': str(c), 'value': str(c)} for c in df['Контра
 networks = sorted([{'label': str(n), 'value': str(n)} for n in df['Сеть'].unique()], key=lambda x: x['label'])
 brands = sorted([{'label': str(b), 'value': str(b)} for b in df['Brand_format'].unique()], key=lambda x: x['label'])
 groups = sorted([{'label': str(g), 'value': str(g)} for g in df['группа сбыта'].unique()], key=lambda x: x['label'])
-years = sorted([{'label': str(y), 'value': y} for y in df['Год'].unique()])
+years = sorted([{'label': str(y), 'value': y} for y in df['Год'].unique()], key=lambda x: x['value'])
 
 # Определение стилей
 CARD_STYLE = {

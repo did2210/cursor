@@ -58,7 +58,7 @@ contracts_list = sorted([{'label': str(c), 'value': str(c)} for c in df['Кон�
 networks_list = sorted([{'label': str(n), 'value': str(n)} for n in df['Сеть'].unique()], key=lambda x: x['label'])
 brands_list = sorted([{'label': str(b), 'value': str(b)} for b in df['Brand_format'].unique()], key=lambda x: x['label'])
 groups_list = sorted([{'label': str(g), 'value': str(g)} for g in df['группа сбыта'].unique()], key=lambda x: x['label'])
-months_list = sorted([{'label': m, 'value': m} for m in df['Месяц_название'].unique()])
+months_list = sorted([{'label': m, 'value': m} for m in df['Месяц_название'].unique()], key=lambda x: x['value'])
 
 # ============================================================================
 # LAYOUT
