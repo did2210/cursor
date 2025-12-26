@@ -105,9 +105,9 @@
 РЕШЕНИЕ:
    1. Откройте professional_bi_dashboard.py
    2. В самом конце измените:
-      app.run_server(debug=False, host='0.0.0.0', port=8050)
+      app.run(debug=False, host='0.0.0.0', port=8050)
       на
-      app.run_server(debug=False, host='0.0.0.0', port=8888)
+      app.run(debug=False, host='0.0.0.0', port=8888)
    3. Откройте: http://localhost:8888
 
 ОШИБКА: "python не является внутренней или внешней командой"
